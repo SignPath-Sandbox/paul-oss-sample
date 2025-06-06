@@ -1,0 +1,39 @@
+name: Sign
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on:
+      group: Paid
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Download dummy executable for signing
+        run: curl -o random.dll -L https://github.com/carterjones/hello-world-dll/releases/download/v1.0.0/hello-world-x64.dll
+      
+      - name: Upload unsigned artifact
+        id: upload-unsigned-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: 'unsigned'
+          if-no-files-found: error
+          path: random.dll
+
+      - name: Submit Signing Request
+        uses: signpath/github-action-submit-signing-request@v1.1
+        with:
+          api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
+          organization-id: 'bda47dcb-6026-400a-a1f2-285ad3524bf1'
+          project-slug: 'EXE'
+          signing-policy-slug:  'test-signing'
+          github-artifact-id:  "${{steps.upload-unsigned-artifact.outputs.artifact-id}}"
+          artifact-configuration-slug: 'zipped'
+          wait-for-completion: false
