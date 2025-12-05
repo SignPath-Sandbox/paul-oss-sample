@@ -30,7 +30,7 @@ jobs:
           api-token: '${{ secrets.SIGNPATH_API_TOKEN }}'
           organization-id: 'bda47dcb-6026-400a-a1f2-285ad3524bf1'
           project-slug: 'EXE'
-          signing-policy-slug:  'test-signing'
+          signing-policy-slug:  'release-signing'
           github-artifact-id:  "${{steps.upload-unsigned-artifact.outputs.artifact-id}}"
           artifact-configuration-slug: 'zipped'
           wait-for-completion: false
